@@ -4,4 +4,4 @@
 
 ________________________________________________________________________
 
-**LoxyLoxy** - Overpowered Discord Roblox Cookie Checker Bot
+                                                          **LoxyLoxy** - Overpowered Discord Roblox Cookie Checker Bot
