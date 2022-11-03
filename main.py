@@ -1,5 +1,5 @@
 # Made by DankoOfficial on Github
-# Discord: $ky#3788
+# Discord: $ky#4280
 # Dont skid, I'll catch you I swear. Give credits
 # vc = Valid Cookie
 # vcr = Valid Cookie Robux
@@ -7,8 +7,8 @@
 
 from requests import get;import discord;from discord.ext import commands
 def bot():
-    client = commands.Bot(command_prefix=".")
-    discordBot = 'DISCORD BOT TOKEN HERE'
+    client = commands.Bot(command_prefix="PREFIX HERE")
+    discordBot = 'TOKEN HERE'
     @client.event
     async def on_ready():
         print(f"""Successfully Connected To [{client.user}]\n\n[!] Logs will be sent here""")
@@ -20,23 +20,17 @@ def bot():
         if '"robux"' in response.text:
             embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
             embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```'+text+'```', color=0x38d13b)
-            member = ctx.author
-            dmch = await member.create_dm()
+            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
+            dmch = await ctx.author.create_dm()
             await dmch.send(embed=embedVar1)
-            replacement = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            text = text.replace(text[len(text) - 200:], replacement)
-            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
             await ctx.send(embed=embedVar)
         else:
             embedVar = discord.Embed(title=":x: Invalid Cookie", description="", color=0xFF0000)
-            replacement = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            text = text.replace(text[len(text) - 200:], replacement)
-            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
+            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             await ctx.send(embed=embedVar)
-
     @client.command()
     async def vcr(ctx, *, text):
-        message = ctx.message;
+        message = ctx.message
         await message.delete()
         response = get('https://api.roblox.com/currency/balance', cookies={'.ROBLOSECURITY': text})
         if '"robux"' in response.text:
@@ -44,22 +38,17 @@ def bot():
             embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
             embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```' + text + '```',color=0x38d13b)
             embedVar1.add_field(name="Robux", value='```' + str(robux) + '```', inline=False)
-            member = ctx.author
-            dmch = await member.create_dm()
-            await dmch.send(embed=embedVar1)
-            replacement = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            text = text.replace(text[len(text) - 200:], replacement)
-            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
+            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             embedVar.add_field(name="Robux", value='**' + str(robux) + '**', inline=False)
+            dmch = await ctx.author.create_dm()
+            await dmch.send(embed=embedVar1)
             await ctx.send(embed=embedVar)
         else:
             embedVar = discord.Embed(title=":x: Invalid Cookie", description="", color=0xFF0000)
-            replacement = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            text = text.replace(text[len(text) - 200:], replacement)
-            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
+            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             await ctx.send(embed=embedVar)
     @client.command()
-    async def m(ctx, *, text):
+    async def vcf(ctx, *, text):
         capture = ""
         message = ctx.message;await message.delete()
         response = get('https://api.roblox.com/currency/balance', cookies={'.ROBLOSECURITY': text})
@@ -89,7 +78,7 @@ def bot():
                 email = f" | Email: {emailAddress} | is Email Verified: {emailVerified}"
             except:
                 email = " | Email: No Email"
-            capture = capture + email
+            capture += email
             friends = get('https://friends.roblox.com/v1/my/friends/count',cookies={'.ROBLOSECURITY': text}).json()['count']
             friendRequests = get('https://friends.roblox.com/v1/user/friend-requests/count', cookies={'.ROBLOSECURITY': text}).json()['count']
             isVerifiedForVoice = get('https://voice.roblox.com/v1/settings', cookies={'.ROBLOSECURITY': text}).json()['isVerifiedForVoice']
@@ -111,31 +100,50 @@ def bot():
                 n=1;tt=0
                 try:
                     while 1:
-                        robux = checkForGamePasses.text.split('"PriceInRobux":')[n].split(',"PremiumDiscountPercentage')[0]
+                        robux = checkForGamePasses.text.split('"PriceInRobux":')[n].split(',')[0]
                         tt = tt + int(robux)
                         n += 1
                 except: gamePasses = tt
             capture = capture + f" | Total Paid For Gamepasses: {gamePasses}"
+            transactions = get(f'https://economy.roblox.com/v2/users/{UserId}/transaction-totals?timeFrame=Year&transactionType=summary', cookies={'.ROBLOSECURITY': text})
+            salesTotal = transactions.text.split('"salesTotal":')[1].split(',"')[0]
+            groupPayoutsTotal = transactions.json()['groupPayoutsTotal']
+            currencyPurchasesTotal = transactions.json()['currencyPurchasesTotal']
+            premiumStipendsTotal = transactions.json()['premiumStipendsTotal']
+            premiumPayoutsTotal = transactions.json()['premiumPayoutsTotal']
+            pendingRobuxTotal = transactions.json()['pendingRobuxTotal']
+            incomingRobuxTotal = transactions.json()['incomingRobuxTotal']
+            hasHeadless = get(f'https://inventory.roblox.com/v2/users/{UserId}/inventory?assetTypes=Head&cursor=&limit=100&sortOrder=Desc&userId={UserId}', cookies={'.ROBLOSECURITY': text})
+            if 'Headless' in hasHeadless.text: headless = True
+            else: headless = False
+            capture = capture + f" | Has Headless: {headless}"
+            hasKorblox = get(f'https://avatar.roblox.com/v1/users/{UserId}/outfits?isEditable=false&itemsPerPage=50&page=1', cookies={'.ROBLOSECURITY': text})
+            if 'Korblox' in hasKorblox.text: korblox = True
+            else: korblox = False
+            capture = capture + f" | Has Korblox: {korblox}"
+            hasVioletValk = get(f'https://inventory.roblox.com/v2/users/{UserId}/inventory?assetTypes=Hat&cursor=&limit=100&sortOrder=Desc&userId={UserId}', cookies={'.ROBLOSECURITY': text})
+            if 'Violet Valkyrie' in hasVioletValk.text: violetValk = True
+            else: violetValk = False
+            capture = capture + f" | Has Violet Valkyrie: {violetValk}"
+            capture = capture + f" | Total Sales: {salesTotal} | Total Group Payouts: {groupPayoutsTotal} | Total Currency Purchases: {currencyPurchasesTotal} | Total Premium Stipends: {premiumStipendsTotal} | Total Premium Payouts: {premiumPayoutsTotal} | Total Pending Robux: {pendingRobuxTotal} | Total Incoming Robux: {incomingRobuxTotal}"
+            capture += f" | Group Count: {get('https://groups.roblox.com/v1/groups/metadata').json()['currentGroupCount']}"
+            badges = get(f'https://accountinformation.roblox.com/v1/users/{UserId}/roblox-badges')
+            amount = badges.text.count('"name":"')
+            allbadges = []
+            for badge in range(amount): allbadges.append(badges.text.split('"name":"')[int(badge+1)].split('"')[0])
+            capture += " | Badges: "+", ".join(str(x) for x in allbadges)
             embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
             embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```' + text + '```',color=0x38d13b)
-            image = get(f'https://www.rolimons.com/thumbnailsapi/avatar?userIds={UserId}&size=150x150').json()['thumbnails'][f'{UserId}']['url']
-            embedVar1.set_image(url=image)
             embedVar1.set_thumbnail(url=f"https://www.roblox.com/headshot-thumbnail/image?userId={UserId}&width=420&height=420&format=png")
             embedVar1.add_field(name="Capture", value='```' + str(capture) + '```', inline=False)
-            member = ctx.author
-            dmch = await member.create_dm()
-            await dmch.send(embed=embedVar1)
-            replacement = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            text = text.replace(text[len(text) - 650:], replacement)
-            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
+            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             embedVar.add_field(name="Capture", value='```' + str(capture) + '```', inline=False)
-            embedVar.set_image(url=image)
             embedVar.set_thumbnail(url=f"https://www.roblox.com/headshot-thumbnail/image?userId={UserId}&width=420&height=420&format=png")
             await ctx.send(embed=embedVar)
+            dmch = await ctx.author.create_dm()
+            await dmch.send(embed=embedVar1)
         else:
             embedVar = discord.Embed(title=":x: Invalid Cookie", description="", color=0xFF0000)
-            replacement = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            text = text.replace(text[len(text) - 650:], replacement)
             embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
             await ctx.send(embed=embedVar)
     client.run(discordBot)
