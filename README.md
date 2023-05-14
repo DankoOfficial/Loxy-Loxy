@@ -1,6 +1,5 @@
 ## Loxy-Loxy - NEXT UPDATE AT 25 STARS
-   ![image](https://user-images.githubusercontent.com/99405955/170882820-a86c5d3a-b829-42e9-9ba2-467d33adbc4a.png)
-
+   ![image](https://github.com/scoobyluvs/Loxy-Loxy/assets/100179759/0e9c6f29-16da-4777-b8a3-c263a52609dd)
 
                           ________________________________________________________________________
 
