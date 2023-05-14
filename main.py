@@ -5,146 +5,146 @@
 # vcr = Valid Cookie Robux
 # vcf = Valid Cookie Full
 
-from requests import get;import discord;from discord.ext import commands
-def bot():
-    client = commands.Bot(command_prefix="PREFIX HERE")
-    discordBot = 'TOKEN HERE'
-    @client.event
-    async def on_ready():
-        print(f"""Successfully Connected To [{client.user}]\n\n[!] Logs will be sent here""")
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f".help | Checking your Roblox Cookies"))
-    @client.command()
-    async def vc(ctx, *, text):
-        message = ctx.message;await message.delete()
-        response = get('https://api.roblox.com/currency/balance',cookies={'.ROBLOSECURITY': text})
-        if '"robux"' in response.text:
-            embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
-            embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```'+text+'```', color=0x38d13b)
-            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
-            dmch = await ctx.author.create_dm()
-            await dmch.send(embed=embedVar1)
-            await ctx.send(embed=embedVar)
-        else:
+import aiohttp
+import discord
+from discord.ext import commands
+
+config = { 
+    
+    "token": "token",
+    "prefix": ".",
+
+}
+
+bot = commands.Bot(
+    command_prefix=config['prefix'],
+    intents=discord.Intents.all(),
+    help_command=None,
+    activity=discord.Activity(type=discord.ActivityType.watching,name=f".help | Checking your Roblox Cookies")
+    
+)
+
+@bot.event
+async def on_ready():
+    print(f"""Successfully Connected To [{bot.user}]\n\n[!] Logs will be sent here""")
+
+@bot.command()
+async def help(ctx):
+    await ctx.reply(f'**{config["prefix"]}vc**: Checks if the cookie is vaild\n**{config["prefix"]}vcr**: Returns robux info about the cookie\n**{config["prefix"]}vcf**: Returns intensive info about the cookie.')
+
+@bot.command()
+async def vc(ctx, *, text):
+    await ctx.message.delete()
+    async with aiohttp.ClientSession(cookies={'.ROBLOSECURITY': text}) as session:
+        try:
+            async with session.get('https://www.roblox.com/mobileapi/userinfo') as response:
+                embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
+                embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```'+text+'```', color=0x38d13b)
+                embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
+                dmch = await ctx.author.create_dm()
+                await dmch.send(embed=embedVar1)
+                await ctx.send(embed=embedVar)
+        except:
             embedVar = discord.Embed(title=":x: Invalid Cookie", description="", color=0xFF0000)
             embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             await ctx.send(embed=embedVar)
-    @client.command()
-    async def vcr(ctx, *, text):
-        message = ctx.message
-        await message.delete()
-        response = get('https://api.roblox.com/currency/balance', cookies={'.ROBLOSECURITY': text})
-        if '"robux"' in response.text:
-            robux = response.json()['robux']
-            embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
-            embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```' + text + '```',color=0x38d13b)
-            embedVar1.add_field(name="Robux", value='```' + str(robux) + '```', inline=False)
-            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
-            embedVar.add_field(name="Robux", value='**' + str(robux) + '**', inline=False)
-            dmch = await ctx.author.create_dm()
-            await dmch.send(embed=embedVar1)
-            await ctx.send(embed=embedVar)
-        else:
+                
+@bot.command()
+async def vcr(ctx, *, text):
+    await ctx.message.delete()
+    async with aiohttp.ClientSession(cookies={'.ROBLOSECURITY': text}) as session:
+        try:
+            async with session.get('https://www.roblox.com/mobileapi/userinfo') as response:
+                robux = (await response.json())['RobuxBalance']
+                embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
+                embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```' + text + '```',color=0x38d13b)
+                embedVar1.add_field(name="Robux", value='```' + str(robux) + '```', inline=False)
+                embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
+                embedVar.add_field(name="Robux", value='**' + str(robux) + '**', inline=False)
+                dmch = await ctx.author.create_dm()
+                await dmch.send(embed=embedVar1)
+                await ctx.send(embed=embedVar)
+        except:
             embedVar = discord.Embed(title=":x: Invalid Cookie", description="", color=0xFF0000)
             embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
             await ctx.send(embed=embedVar)
-    @client.command()
-    async def vcf(ctx, *, text):
-        capture = ""
-        message = ctx.message;await message.delete()
-        response = get('https://api.roblox.com/currency/balance', cookies={'.ROBLOSECURITY': text})
-        if '"robux"' in response.text:
-            robux = response.json()['robux']
-            creditBalance = get('https://billing.roblox.com/v1/credit', cookies={'.ROBLOSECURITY': text})
-            creditBalance1=float(creditBalance.json()['balance'])
-            creditBalanceToRobux=creditBalance.json()['robuxAmount']
-            capture = capture + f'Robux: {robux} | Credit Balance: ${creditBalance1} [{creditBalanceToRobux} Robux]'
-            fullInfo = get('https://www.roblox.com/my/settings/json', cookies={'.ROBLOSECURITY': text})
-            UserId = fullInfo.json()['UserId']
-            AccountAgeInDays = fullInfo.json()['AccountAgeInDays']
-            ChangeEmailRequiresTwoStepVerification = fullInfo.json()['ChangeEmailRequiresTwoStepVerification']
-            ChangePasswordRequiresTwoStepVerification = fullInfo.json()['ChangePasswordRequiresTwoStepVerification']
-            DisplayName = fullInfo.json()['DisplayName']
-            IsAdmin = fullInfo.json()['IsAdmin']
-            IsBirthdateLocked = fullInfo.json()['IsBirthdateLocked']
-            IsPremium = fullInfo.json()['IsPremium']
-            userName = fullInfo.json()['Name']
-            UserAbove13 = fullInfo.json()['UserAbove13']
-            crtDate = get(f'https://users.roblox.com/v1/users/{UserId}').json()['created']
-            capture = capture + f' | Username: {userName} [{DisplayName}] | Creation Date: {crtDate} [{AccountAgeInDays} Days Ago] | Has Premium: {IsPremium} | is Birthdate Locked: {IsBirthdateLocked} | Will Changing Email Require 2FA: {ChangeEmailRequiresTwoStepVerification} | Will Changing Password Require 2FA: {ChangePasswordRequiresTwoStepVerification} | is Admin: {IsAdmin} | is User Above 13: {UserAbove13}'
-            response2 = get('https://accountsettings.roblox.com/v1/email',cookies={'.ROBLOSECURITY': text})
+
+@bot.command()
+async def vcf(ctx, *, text):
+    await ctx.send('**Please wait we are fetching info...**')
+    await ctx.message.delete()
+    async with aiohttp.ClientSession(cookies={'.ROBLOSECURITY': text}) as session:
+        try:
+            async with session.get('https://www.roblox.com/mobileapi/userinfo') as resp:
+                    robux = (await resp.json())['RobuxBalance']
+                    thumbnail = (await resp.json())['ThumbnailUrl']
+        except:
+            return await ctx.send("Invalid .ROBLOSECURITY cookie.")
+        async with session.get('https://billing.roblox.com/v1/credit') as resp:
+            credit_robux = (await resp.json())['robuxAmount']
+        async with session.get('https://www.roblox.com/my/settings/json') as resp:
+            full_info = await resp.json()
+            user_id = full_info['UserId']
+            account_age = full_info['AccountAgeInDays']
+            display_name = full_info['DisplayName']
+            is_premium = full_info['IsPremium']
+            is_admin = full_info['IsAdmin']
+            is_birthdate_locked = full_info['IsBirthdateLocked']
+            name = full_info['Name']
+            requires_2fa_email = full_info['ChangeEmailRequiresTwoStepVerification']
+            requires_2fa_password = full_info['ChangePasswordRequiresTwoStepVerification']
+            user_above_13 = full_info['UserAbove13']
+        try:
+            async with session.get('https://accountsettings.roblox.com/v1/email') as resp:
+                email_address = (await resp.json())['emailAddress']
+                email_verified = (await resp.json())['verified']
+                email = f"Email: {email_address} | is Email Verified: {email_verified}"
+        except:
+            email = "Email: No Email"
+        async with session.get('https://friends.roblox.com/v1/my/friends/count') as resp:
+            friends = (await resp.json())['count']
+        async with session.get('https://friends.roblox.com/v1/user/friend-requests/count') as resp:
+            friend_requests = (await resp.json())['count']
+        async with session.get('https://voice.roblox.com/v1/settings') as resp:
+            is_verified_voice = (await resp.json())['isVerifiedForVoice']
+        async with session.get('https://accountinformation.roblox.com/v1/phone') as resp:
             try:
-                emailAddress = response2.json()['emailAddress']
-                emailVerified = response2.json()['verified']
-                email = f" | Email: {emailAddress} | is Email Verified: {emailVerified}"
+                phone_data = await resp.json()
+                country_code = phone_data['countryCode']
+                is_phone_verified = phone_data['isVerified']
+                phone = phone_data['phone']
+                phones = f'Phone Number: {phone} | is Phone Verified: {is_phone_verified} | Country: {country_code}'
             except:
-                email = " | Email: No Email"
-            capture += email
-            friends = get('https://friends.roblox.com/v1/my/friends/count',cookies={'.ROBLOSECURITY': text}).json()['count']
-            friendRequests = get('https://friends.roblox.com/v1/user/friend-requests/count', cookies={'.ROBLOSECURITY': text}).json()['count']
-            isVerifiedForVoice = get('https://voice.roblox.com/v1/settings', cookies={'.ROBLOSECURITY': text}).json()['isVerifiedForVoice']
-            hasPhoneNumber = get('https://accountinformation.roblox.com/v1/phone', cookies={'.ROBLOSECURITY': text})
+                phones = 'Phone: None'
+        async with session.get(f'https://groups.roblox.com/v2/users/{user_id}/groups/roles') as resp:
             try:
-                countryCode = hasPhoneNumber.json()['countryCode']
-                isVerified = hasPhoneNumber.json()['isVerified']
-                phone = hasPhoneNumber.json()['phone']
-                phones = f' | Phone Number: {phone} | is Phone Verified: {isVerified} | Country: {countryCode}'
-                capture = capture + phones
+                groups_data = await resp.json()
+                groups_roles = []
+                for group in groups_data['data']:
+                    group_id = group['group']['id']
+                    group_name = group['group']['name']
+                    role = group['role']['name']
+                    groups_roles.append(f'**Name**: {group_name} | **Role**: {role}')
+                groups = f"\n".join(groups_roles)
             except:
-                capture = capture + ' | Phone: None'
-            hasPin = get('https://auth.roblox.com/v1/account/pin', cookies={'.ROBLOSECURITY': text}).json()['isEnabled']
-            capture = capture + f' | Friends: {friends} | Friend Requests: {friendRequests} | is Verified For Voice: {isVerifiedForVoice} | Has Pin: {hasPin}'
-            checkForGamePasses = get(f'https://www.roblox.com/users/inventory/list-json?assetTypeId=34&cursor=&itemsPerPage=100&pageNumber=1&userId={UserId}', cookies={'.ROBLOSECURITY': text})
-            if '"Items":[]' in checkForGamePasses.text:
-                gamePasses = "0"
-            else:
-                n=1;tt=0
-                try:
-                    while 1:
-                        robux = checkForGamePasses.text.split('"PriceInRobux":')[n].split(',')[0]
-                        tt = tt + int(robux)
-                        n += 1
-                except: gamePasses = tt
-            capture = capture + f" | Total Paid For Gamepasses: {gamePasses}"
-            transactions = get(f'https://economy.roblox.com/v2/users/{UserId}/transaction-totals?timeFrame=Year&transactionType=summary', cookies={'.ROBLOSECURITY': text})
-            salesTotal = transactions.text.split('"salesTotal":')[1].split(',"')[0]
-            groupPayoutsTotal = transactions.json()['groupPayoutsTotal']
-            currencyPurchasesTotal = transactions.json()['currencyPurchasesTotal']
-            premiumStipendsTotal = transactions.json()['premiumStipendsTotal']
-            premiumPayoutsTotal = transactions.json()['premiumPayoutsTotal']
-            pendingRobuxTotal = transactions.json()['pendingRobuxTotal']
-            incomingRobuxTotal = transactions.json()['incomingRobuxTotal']
-            hasHeadless = get(f'https://inventory.roblox.com/v2/users/{UserId}/inventory?assetTypes=Head&cursor=&limit=100&sortOrder=Desc&userId={UserId}', cookies={'.ROBLOSECURITY': text})
-            if 'Headless' in hasHeadless.text: headless = True
-            else: headless = False
-            capture = capture + f" | Has Headless: {headless}"
-            hasKorblox = get(f'https://avatar.roblox.com/v1/users/{UserId}/outfits?isEditable=false&itemsPerPage=50&page=1', cookies={'.ROBLOSECURITY': text})
-            if 'Korblox' in hasKorblox.text: korblox = True
-            else: korblox = False
-            capture = capture + f" | Has Korblox: {korblox}"
-            hasVioletValk = get(f'https://inventory.roblox.com/v2/users/{UserId}/inventory?assetTypes=Hat&cursor=&limit=100&sortOrder=Desc&userId={UserId}', cookies={'.ROBLOSECURITY': text})
-            if 'Violet Valkyrie' in hasVioletValk.text: violetValk = True
-            else: violetValk = False
-            capture = capture + f" | Has Violet Valkyrie: {violetValk}"
-            capture = capture + f" | Total Sales: {salesTotal} | Total Group Payouts: {groupPayoutsTotal} | Total Currency Purchases: {currencyPurchasesTotal} | Total Premium Stipends: {premiumStipendsTotal} | Total Premium Payouts: {premiumPayoutsTotal} | Total Pending Robux: {pendingRobuxTotal} | Total Incoming Robux: {incomingRobuxTotal}"
-            capture += f" | Group Count: {get('https://groups.roblox.com/v1/groups/metadata').json()['currentGroupCount']}"
-            badges = get(f'https://accountinformation.roblox.com/v1/users/{UserId}/roblox-badges')
-            amount = badges.text.count('"name":"')
-            allbadges = []
-            for badge in range(amount): allbadges.append(badges.text.split('"name":"')[int(badge+1)].split('"')[0])
-            capture += " | Badges: "+", ".join(str(x) for x in allbadges)
-            embedVar = discord.Embed(title=":white_check_mark: Valid Cookie", description="", color=0x38d13b)
-            embedVar1 = discord.Embed(title=":white_check_mark: Cookie", description='```' + text + '```',color=0x38d13b)
-            embedVar1.set_thumbnail(url=f"https://www.roblox.com/headshot-thumbnail/image?userId={UserId}&width=420&height=420&format=png")
-            embedVar1.add_field(name="Capture", value='```' + str(capture) + '```', inline=False)
-            embedVar.add_field(name="Passed Cookie: ", value='```                       Hidden                  ```', inline=False)
-            embedVar.add_field(name="Capture", value='```' + str(capture) + '```', inline=False)
-            embedVar.set_thumbnail(url=f"https://www.roblox.com/headshot-thumbnail/image?userId={UserId}&width=420&height=420&format=png")
-            await ctx.send(embed=embedVar)
-            dmch = await ctx.author.create_dm()
-            await dmch.send(embed=embedVar1)
-        else:
-            embedVar = discord.Embed(title=":x: Invalid Cookie", description="", color=0xFF0000)
-            embedVar.add_field(name="Passed Cookie: ", value='```' + text + '```', inline=False)
-            await ctx.send(embed=embedVar)
-    client.run(discordBot)
-bot()
+                groups = "No Groups"
+        embed = discord.Embed(title=f"**{display_name} ({name})**", color=discord.Color.green())
+        embed.set_thumbnail(url=f"{thumbnail}")
+        embed.add_field(name="Robux Balance", value=f"{robux} R$", inline=True)
+        embed.add_field(name="Credit Balance", value=f"{credit_robux} R$", inline=True)
+        embed.add_field(name="Premium", value=is_premium, inline=True)
+        embed.add_field(name="Admin", value=is_admin, inline=True)
+        embed.add_field(name="Account Age", value=f"{account_age} Days", inline=True)
+        embed.add_field(name="User Above 13", value=user_above_13, inline=True)
+        embed.add_field(name="Voice Verification", value=is_verified_voice, inline=True)
+        embed.add_field(name="Friends", value=friends, inline=True)
+        embed.add_field(name="2FA Email Verification", value=requires_2fa_email, inline=True)
+        embed.add_field(name="2FA Password Verification", value=requires_2fa_password, inline=True)
+        embed.add_field(name="Birthdate Locked", value=is_birthdate_locked, inline=True)
+        embed.add_field(name="Friend Requests", value=friend_requests, inline=True)
+        embed.add_field(name="Email Verification", value=email, inline=False)
+        embed.add_field(name="Phone Verification", value=phones, inline=False)
+        embed.add_field(name="Groups", value=groups, inline=False)
+        await ctx.send(embed=embed)
+
+bot.run(config['token'])
