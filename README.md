@@ -1,4 +1,4 @@
-## Loxy-Loxy - Multi-purpose roblox cookie checker (Through a discord bot)
+## Loxy-Loxy - Multi-purpose roblox cookie checker (Through a discord bot) - Latest update: 7 Oct 2023
    ![image]![rblx](https://github.com/DankoOfficial/Loxy-Loxy/assets/99405955/3fa0e775-7c7b-43c4-b99b-dc13ec2c1459)
 
 ## Star History
