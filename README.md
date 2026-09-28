@@ -1,4 +1,12 @@
-## Loxy-Loxy - Multi-purpose roblox cookie checker (Through a discord bot) - Latest update: 7 Oct 2023
+## Star History
+
+<a href="https://www.star-history.com/?type=date&repos=DankoOfficial%2FLoxy-Loxy">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=DankoOfficial/Loxy-Loxy&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=DankoOfficial/Loxy-Loxy&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=DankoOfficial/Loxy-Loxy&type=date&legend=top-left" />
+ </picture>
+</a>## Loxy-Loxy - Multi-purpose roblox cookie checker (Through a discord bot) - Latest update: 7 Oct 2023
 ![rblx](https://github.com/DankoOfficial/Loxy-Loxy/assets/99405955/9ae7a077-9e4f-49e7-81d7-18c7dd3e8095)
 
 ## Commands
